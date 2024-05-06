@@ -1,0 +1,54 @@
+﻿@page
+@model ToDoExampleAndy.Pages.Graphs.GraphModel
+@{
+	ViewData["Title"] = "Tasks Graph";
+}
+
+<h2>Tasks Completion Graph</h2>
+
+<div>
+    <canvas id="myChart" style="width:100%;max-width:700px"></canvas>
+</div>
+
+@section Scripts {
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+    </script>
+    <script>
+        var SalesData = @Html.Raw(Model.SalesJson);
+        let DayCount = Array(7).fill(0);
+        var Test
+        SalesData.forEach((element, index) => {
+            Test = new Date(element.TransactionDate);
+            if (Test.getDay() != 0) {
+                DayCount[Test.getDay() - 1]++;
+            }
+            else {
+                DayCount[6]++;
+            }
+
+        });
+
+        const xValues = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+        const yValues = DayCount;
+        const barColors = ["red", "green", "blue", "orange", "brown", "purple", "yellow"];
+
+        new Chart("myChart", {
+            type: "bar",
+            data: {
+                labels: xValues,
+                datasets: [{
+                    backgroundColor: barColors,
+                    data: yValues
+                }]
+            },
+            options: {
+                legend: { display: false },
+                title: {
+                    display: true,
+                    text: "Sales per day of week"
+                }
+            }
+        });
+    </script>
+}
